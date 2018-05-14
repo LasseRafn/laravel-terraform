@@ -50,15 +50,85 @@ module "aurora" {
   instance_class     = "${var.instance_class}"
 }
 
-// application
+######
+# ELB
+######
 module "elb" {
-  source           = "./modules/elb"
-  stack_name       = "${var.stack_name}"
-  vpc_id           = "${module.vpc.vpc_id}"
-  public_subnet_id = "${module.vpc.public_subnet_ids[0]}"
-  public_ips       = "${var.public_ips}"
-  s3_bucket_arn    = "${module.s3.s3_bucket_arn}"
+  source = "./modules/elb"
+
+  load_balancer_type = "application"
+  name = "${var.stack_name}"
+
+  subnets         = ["${module.vpc.public_subnet_ids}"]
+  security_groups = ["${var.security_groups}"]
+  internal        = false
+
+  cross_zone_load_balancing   = "${var.elb_cross_zone_load_balancing}"
+  idle_timeout                = "${var.elb_idle_timeout}"
+  connection_draining         = "${var.elb_connection_draining}"
+  connection_draining_timeout = "${var.elb_connection_draining_timeout}"
+
+  listener     = [
+    {
+      instance_port     = "80"
+      instance_protocol = "HTTP"
+      lb_port           = "80"
+      lb_protocol       = "HTTP"
+    },
+    {
+      instance_port     = "8080"
+      instance_protocol = "HTTP"
+      lb_port           = "8080"
+      lb_protocol       = "HTTP"
+    },
+    {
+      instance_port     = "443"
+      instance_protocol = "HTTPS"
+      lb_port           = "443"
+      lb_protocol       = "HTTPS"
+    },
+  ]
+  
+  access_logs  = [
+      {
+        bucket = "${module.s3_logs.s3_bucket_arn}",
+        prefix  = "access_logs"
+        enabled = true
+      },
+  ]
+  
+  health_check = [
+    {
+      target              = "HTTP:80/"
+      interval            = 30
+      healthy_threshold   = 2
+      unhealthy_threshold = 2
+      timeout             = 5
+    },
+    {
+      target              = "HTTP:443/"
+      interval            = 30
+      healthy_threshold   = 2
+      unhealthy_threshold = 2
+      timeout             = 5
+    },
+  ],
+  
+  tags = {
+    name = "${var.stack_name}"
+  }
+}
+
+#################
+# ELB attachment
+#################
+module "elb_attachment" {
+  source = "./modules/elb_attachment"
+
   number_of_instances = "${var.number_of_instances}"
+
+  elb       = "${module.elb.this_elb_id}"
+  instances = "${var.instances}"
 }
 
 // vm
@@ -75,3 +145,9 @@ module "s3" {
   source           = "./modules/s3"
   stack_name       = "${var.stack_name}"
 }
+
+module "s3_logs" {
+  source           = "./modules/s3"
+  stack_name       = "${var.stack_name}-logs"
+}
+
