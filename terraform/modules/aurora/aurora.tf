@@ -86,6 +86,7 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   publicly_accessible  = false
   engine               = "aurora-mysql"
   engine_version       = "5.7.12"
+  multi_az             = true
 
   tags {
     Name = "${var.stack_name}"
