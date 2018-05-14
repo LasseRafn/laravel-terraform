@@ -1,11 +1,19 @@
 ######
 # ELB
 ######
-resource "aws_elb" "this" {
-  name            = "${var.name}"
-  subnets         = ["${var.subnets}"]
-  internal        = "${var.internal}"
-  security_groups = ["${var.security_groups}"]
+resource "aws_lb" "this" {
+  name                = "${var.name}"
+  load_balancer_type  = "${var.load_balancer_type}"
+  subnets             = ["${var.subnets}"]
+  internal            = "${var.internal}"
+  security_groups     = ["${var.security_groups}"]
+
+  enable_deletion_protection = true
+
+  subnet_mapping {
+    subnet_id    = "${var.public_subnet_id}"
+    allocation_id = "${var.public_ips}"
+  }
 
   cross_zone_load_balancing   = "${var.cross_zone_load_balancing}"
   idle_timeout                = "${var.idle_timeout}"
