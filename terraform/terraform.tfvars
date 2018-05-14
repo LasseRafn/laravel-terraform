@@ -15,3 +15,7 @@ public_ips = {
 
 # EC2 instances
 number_of_instances = 3
+
+# RDS
+rds_instance_class = "db.t2.medium"
+rds_allocated_storage = 100
