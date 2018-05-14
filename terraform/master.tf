@@ -42,10 +42,12 @@ module "vpc" {
 
 // database
 module "aurora" {
-  source     = "./modules/aurora"
-  stack_name = "${var.stack_name}"
-  subnet_ids = "${module.vpc.public_subnet_ids}"
-  vpc_id     = "${module.vpc.vpc_id}"
+  source             = "./modules/aurora"
+  stack_name         = "${var.stack_name}"
+  subnet_ids         = "${module.vpc.public_subnet_ids}"
+  vpc_id             = "${module.vpc.vpc_id}"
+  allocated_storage  = "${var.rds_allocated_storage}"
+  instance_class     = "${var.instance_class}"
 }
 
 // application
