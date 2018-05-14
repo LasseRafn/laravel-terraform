@@ -62,11 +62,16 @@ module "elb" {
   subnets         = ["${module.vpc.public_subnet_ids}"]
   security_groups = ["${var.security_groups}"]
   internal        = false
+  
+  vpc_id           = "${module.vpc.vpc_id}"
+  public_subnet_id = "${module.vpc.public_subnet_ids[0]}"
+  public_ips       = "${var.public_ips}"
+  s3_bucket_arn    = "${module.s3.s3_bucket_arn}"
 
-  cross_zone_load_balancing   = "${var.elb_cross_zone_load_balancing}"
-  idle_timeout                = "${var.elb_idle_timeout}"
-  connection_draining         = "${var.elb_connection_draining}"
-  connection_draining_timeout = "${var.elb_connection_draining_timeout}"
+  cross_zone_load_balancing   = true
+  idle_timeout                = 400
+  connection_draining         = true
+  connection_draining_timeout = 400
 
   listener     = [
     {
@@ -86,6 +91,7 @@ module "elb" {
       instance_protocol = "HTTPS"
       lb_port           = "443"
       lb_protocol       = "HTTPS"
+      ssl_certificate_id = "arn:aws:iam::123456789012:server-certificate/certName"
     },
   ]
   
@@ -94,6 +100,7 @@ module "elb" {
         bucket = "${module.s3_logs.s3_bucket_arn}",
         prefix  = "access_logs"
         enabled = true
+        interval      = 60
       },
   ]
   
