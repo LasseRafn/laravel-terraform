@@ -52,6 +52,7 @@ module "elb" {
   public_subnet_id = "${module.vpc.public_subnet_ids[0]}"
   public_ips       = "${var.public_ips}"
   s3_bucket_arn    = "${module.s3.s3_bucket_arn}"
+  number_of_instances = "${var.number_of_instances}"
 }
 
 // vm
