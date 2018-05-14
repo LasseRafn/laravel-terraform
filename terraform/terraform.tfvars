@@ -12,3 +12,6 @@ public_ips = {
   production = "18.194.29.93"
   default = "18.194.29.93"
 }
+
+# EC2 instances
+number_of_instances = 3
