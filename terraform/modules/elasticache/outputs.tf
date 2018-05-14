@@ -1,3 +1,3 @@
-output "ip" {
-  value = "${aws_elasticache_cluster.cluster_address}"
+output "elasticache_ip" {
+  value = "${aws_elasticache_cluster.app.cluster_address}"
 }
