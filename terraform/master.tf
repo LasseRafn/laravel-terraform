@@ -26,9 +26,9 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket  = "laravelaws-tf-state"
+    bucket  = "rackbeat-tf-state"
     key     = "main.tfstate"
-    region  = "eu-west-2"
+    region  = "${var.aws_region}"
     profile = "default"
     workspace_key_prefix  = "workspaces"
   }
