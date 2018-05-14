@@ -2,13 +2,13 @@
 aws_profile = "default"
 
 # The default region for your Terraform infrastructure
-aws_region = "eu-west-2"
+aws_region = "eu-central-1"
 
 # Your project's name
-stack_name = "laravelaws"
+stack_name = "rackbeat"
 
 # Optional Elastic IPs you want to use
 public_ips = {
-  production = ""
-  default = ""
+  production = "18.194.29.93"
+  default = "18.194.29.93"
 }
