@@ -1,4 +1,4 @@
-resource "aws_elasticache_cluster" "example" {
+resource "aws_elasticache_cluster" "app" {
   cluster_id           = "cluster-example"
   engine               = "redis"
   node_type            = "cache.m3.medium"
