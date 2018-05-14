@@ -1,5 +1,9 @@
 variable "stack_name" {}
 
+variable "instance_class" {}
+
+variable "allocated_storage" {}
+
 variable "subnet_ids" {
   type = "list"
 }
@@ -76,7 +80,8 @@ resource "aws_rds_cluster" "aurora_cluster" {
 resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   count                = 1
   cluster_identifier   = "${aws_rds_cluster.aurora_cluster.id}"
-  instance_class       = "db.t2.small"
+  instance_class       = "${var.instance_class}"
+  allocated_storage    = "${var.allocated_storage}"
   db_subnet_group_name = "${aws_db_subnet_group.aurora_subnet_group.name}"
   publicly_accessible  = false
   engine               = "aurora-mysql"
